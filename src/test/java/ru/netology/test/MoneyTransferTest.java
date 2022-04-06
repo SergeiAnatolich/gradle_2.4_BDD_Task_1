@@ -30,10 +30,13 @@ class MoneyTransferTest {
         var verificationPage = loginPage.validLogin(authInfo);
         var verificationCode = DataHelper.getVerificationCodeFor(authInfo);
         var dashboardPage = verificationPage.validVerify(verificationCode);
-        int actualBalance = dashboardPage.getCardBalance(1);
+        int actualBalanceCard1 = dashboardPage.getCardBalance(0);
+        int actualBalanceCard2 = dashboardPage.getCardBalance(1);
         var toppingUpCard = dashboardPage.transferFromCard1ToCard2();
         toppingUpCard.transfer("1000", "5559000000000001");
-        Assertions.assertEquals(actualBalance + 1000, dashboardPage.getCardBalance(1));
+        $("[data-test-id=dashboard]").shouldBe(visible);
+        Assertions.assertEquals(actualBalanceCard1 - 1000, dashboardPage.getCardBalance(0));
+        Assertions.assertEquals(actualBalanceCard2 + 1000, dashboardPage.getCardBalance(1));
     }
 
     @Test
@@ -44,10 +47,13 @@ class MoneyTransferTest {
         var verificationPage = loginPage.validLogin(authInfo);
         var verificationCode = DataHelper.getVerificationCodeFor(authInfo);
         var dashboardPage = verificationPage.validVerify(verificationCode);
-        int actualBalance = dashboardPage.getCardBalance(0);
+        int actualBalanceCard1 = dashboardPage.getCardBalance(0);
+        int actualBalanceCard2 = dashboardPage.getCardBalance(1);
         var toppingUpCard = dashboardPage.transferFromCard2ToCard1();
         toppingUpCard.transfer("2000", "5559000000000002");
-        Assertions.assertEquals(actualBalance + 2000, dashboardPage.getCardBalance(0));
+        $("[data-test-id=dashboard]").shouldBe(visible);
+        Assertions.assertEquals(actualBalanceCard1 + 2000, dashboardPage.getCardBalance(0));
+        Assertions.assertEquals(actualBalanceCard2 - 2000, dashboardPage.getCardBalance(1));
     }
 
     @Test
@@ -73,9 +79,8 @@ class MoneyTransferTest {
         int actualBalance = dashboardPage.getCardBalance(0);
         var toppingUpCard = dashboardPage.transferFromCard2ToCard1();
         toppingUpCard.transfer(Integer.toString(actualBalance + 1000), "5559000000000002");
-//        должна быть проверка на ошибку "недостаточно средств", но можно уйти в минус.
-//        Предположим, что есть овердрафт. Это нужно уточнить!
-//        А пока проверим баланс
+//        должна быть проверка на ошибку "недостаточно средств", но ошибка не возникает - можно уйти в минус.
+        $("[data-test-id=dashboard]").shouldBe(visible);
         Assertions.assertEquals(actualBalance * 2 + 1000, dashboardPage.getCardBalance(0));
     }
 }
