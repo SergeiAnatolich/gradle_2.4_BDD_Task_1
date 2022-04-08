@@ -31,13 +31,8 @@ public class DashboardPage {
         return Integer.parseInt(value);
     }
 
-    public CardReplenishment transferFromCard1ToCard2() {
-        topUpButtons.last().click();
-        return new CardReplenishment();
-    }
-
-    public CardReplenishment transferFromCard2ToCard1() {
-        topUpButtons.first().click();
-        return new CardReplenishment();
+    public CardReplenishmentPage transfer(int index) {
+        topUpButtons.get(index).click();
+        return new CardReplenishmentPage();
     }
 }
